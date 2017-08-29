@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX 10000
+
+
+
+struct Persona
+{
+	char *nombre;
+	char *rut;
+	int edad;
+	struct fechaNacimiento fecha;
+	int puntajeRiesgoSocial;
+};
+
+struct fechaNacimiento
+{
+    int dia;
+    int mes;
+    int anio;
+};
+
+struct nodoPersona{
+
+	struct Persona *persona;
+	struct nodoPersona *sig,*ant;
+
+};
+
+struct Sede
+{
+	struct nodoPersona *persona;
+	char *direccion;
+	int cantidadNinos;
+	int pLibre;
+};
+
+struct Region
+{
+	char *nombre;
+	struct Sede *ubicacion;
+};
+
+struct NodoRegion
+{
+	struct Region *region;
+	struct NodoRegion *sig;
+};
+
+/*
+    ~Personas~
+*/
+
+struct Persona *crearPersona(char *nombre,char *rut,int edad);
+struct Persona *eliminarPersona(char *rut,struct nodoPersona *head);
+struct Persona *modificarPersona(char *rut,)
+struct Persona *buscarPersona(char *rut,struct nodoPersona *head);
+int agregarPersona(struct Persona *nuevo,struct nodoPersona *head);
+int calcularEdad(int dia,int mes,int anio);
+
+/*
+    Funciones Extras
+*/
+
+int comprobarRut(char *rut);
+
+int main()
+{
+
+}
+
+struct Persona *crearPersona(char *nombre,char *rut,int edad,int dia,int mes,int anio)
+{
+    struct Persona *nuevo;
+
+    nuevo=(struct Persona*)malloc(sizeof(struct Persona));
+
+    nuevo->nombre=(char *)malloc(strlen(nombre)*sizeof(char));
+    strcpy(nuevo->nombre,nombre);
+    nuevo->rut=(char *)malloc(strlen(rut)*sizeof(char));
+    strcpy(nuevo->rut,rut);
+    nuevo->fecha->dia=dia;
+    nuevo->fecha->mes=mes;
+    nuevo->fecha->anio=anio;
+    edad=calcularEdad(dia,mes,anio);
+
+    return nuevo;
+};
+
+struct Persona *buscarPersona(char *rut,struct nodoPersona *head)
+{
+    struct nodoPersona *rec;
+    rec=head;
+
+    while(rec!=NULL)
+    {
+        if(strcmp(rec->persona->rut,rut)==0)
+        {
+            return rec;
+        }
+
+        rec=rec->sig;
+    }
+
+    return NULL;
+}
