@@ -30,23 +30,24 @@ struct nodoPersona{
 
 struct Sede
 {
-	struct nodoPersona *persona;
 	char *direccion;
-	int cantidadNinos;
+	int codigoSede;
+	struct nodoPersona *persona;
+};
+
+struct NodoSede
+{
+	struct Sede *sede;
+	struct NodoSede *sig;
+};
+
+struct Region 
+{
+	char *Nombre;
 	int pLibre;
+	struct Sede *sede;
 };
 
-struct Region
-{
-	char *nombre;
-	struct Sede *ubicacion;
-};
-
-struct NodoRegion
-{
-	struct Region *region;
-	struct NodoRegion *sig;
-};
 
 /*
     ~Personas~
@@ -58,6 +59,11 @@ struct Persona *modificarPersona(char *rut,)
 struct Persona *buscarPersona(char *rut,struct nodoPersona *head);
 int agregarPersona(struct Persona *nuevo,struct nodoPersona *head);
 int calcularEdad(int dia,int mes,int anio);
+int crearRegion(struct Region *arreglo,char *nombre,int pLibre);
+int eliminarRegion(struct Region *arreglo,char *nombre, int pLibre);
+struct Sede *CrearSede(int codigo ,char *direccion);
+struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig);
+struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo);
 
 /*
     Funciones Extras
@@ -104,4 +110,87 @@ struct Persona *buscarPersona(char *rut,struct nodoPersona *head)
     }
 
     return NULL;
+}
+
+int crearRegion(struct Region *arreglo,char *nombre,int pLibre)
+{
+	struct Region *nuevo=(struct Sede *)malloc(sizeof(struct Sede));
+	
+	nuevo->nombre=(char*)malloc(sizeof(char *));
+	strcpy(nuevo->nombre,nombre);
+	nuevo->codigoSede=codigo;
+	
+	nuevo->sede =NULL;
+	nuevo->pLibre=0;
+	
+	for(i=0;i<=pLibre;i++)
+	{
+		if(arreglo[i]==NULL)
+		{
+			arrelgo[i]=nuevo;
+			return 1
+		}
+	}
+	return 0;//el arreglo esta lleno 	
+}
+
+int eliminarRegion(struct Region *arreglo,char *nombre, int pLibre)
+{
+	int i;
+	
+	for(i=0;i<pLibre;i++)
+	{
+		if((strcmp(arreglo[i]->Nombre,nombre))==0)
+		{
+			arreglo[i]=arreglo[pLibre-1];
+			arreglo[pLibre-1]=NULL;
+			return 1;
+		}
+	}
+	return 0; //no se encontro la Region
+}
+
+struct Sede *CrearSede(int codigo ,char *direccion)
+{
+	struct Sede *nuevo=(struct Sede*)malloc(sizeof(struct Sede));
+	
+	nuevo->codigoSede=codigo;
+	nuevo->direccion=(char*)malloc(sizeof(char*));
+	strcpy(nuevo->direccion,direccion);
+	
+	nuevo->persona=null;
+	
+	return nuevo;
+	
+}
+
+struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig)
+{
+	struct NodoSede *nodo=(struct NodoSede*)malloc(sizeof(struct NodoSede));
+	nodo->sede=nuevo;
+	nodo->sig=NULL;
+	
+	return nodo;
+}
+
+struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo)
+{
+	struct NodoSede *tmp=lista;
+	
+	if(tmp->sede->codigoSede== codigo)
+	{
+		lista=lista->sig;
+		free(tmp);
+	}
+	else
+	{
+		while(tmp->sig->sede->codigoSede != codigo)
+		{
+			tmp=tmp->sig;
+		}
+		free(tmp->sig);
+		tmp->sig = tmp->sig->sig;
+	}
+	return lista;
+	
 }
