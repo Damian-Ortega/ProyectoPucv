@@ -3,8 +3,6 @@
 #include <string.h>
 #define MAX 10000
 
-
-
 struct Persona
 {
 	char *nombre;
