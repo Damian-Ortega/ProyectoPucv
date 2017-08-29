@@ -58,12 +58,19 @@ struct Persona *modificarPersona(char *rut,)
 struct Persona *buscarPersona(char *rut,struct nodoPersona *head);
 int agregarPersona(struct Persona *nuevo,struct nodoPersona *head);
 int calcularEdad(int dia,int mes,int anio);
+void mostrarNinos();
+void mostrarTodosLosNinos();
+void mostrarNinosSede();
+void mostrarNinosRegion();
+void enlazarPersona();
+
 /*
 	~Region~
 */
 
 int crearRegion(struct Region *arreglo,char *nombre,int pLibre);
 int eliminarRegion(struct Region *arreglo,char *nombre, int pLibre);
+
 /*
 	~Sede~
 */
@@ -100,6 +107,18 @@ struct Persona *crearPersona(char *nombre,char *rut,int edad,int dia,int mes,int
 
     return nuevo;
 };
+
+struct nodoPersona crearNodoPersona(struct Persona *nuevo,struct nodoPersona *sig,struct nodoPersona *ant)
+{
+    struct nodoPersona nuevoNodo;
+    nuevoNodo=(struct nodoPersona*)malloc(sizeof(struct nodoPersona));
+    nuevoNodo->persona=nuevo;
+    nuevoNodo->sig=sig;
+    nuevoNodo->ant=ant;
+    
+    return nuevoNodo;
+}
+
 
 struct Persona *buscarPersona(char *rut,struct nodoPersona *head)
 {
