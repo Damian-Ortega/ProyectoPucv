@@ -78,12 +78,16 @@ int eliminarRegion(struct Region *arreglo,char *nombre, int pLibre);
 struct Sede *CrearSede(int codigo ,char *direccion);
 struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig);
 struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo);
+struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
 
 /*
     Funciones Extras
 */
 
 int comprobarRut(char *rut);
+int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede);
+void cuentaPersonasSede(struct NodoSede *head);
+
 
 int main()
 {
@@ -240,4 +244,51 @@ int comprobarRut (char *rut)
 		return 0;
 	}
 	return 1;
+}
+
+int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede)
+{
+	int i;
+	struct NodoSede *tmp;
+	
+	for(i=0;i<arreglo->pLibre;i++)//recorremos el arreglo de Regiones
+	{
+		if(buscarSede(arreglo[i]->sede,codigoSede)!=NULL)
+		{
+			tmp= buscarSede(arreglo[i]->sede,codigoSede);
+			
+			cuentaPersonasSede(tmp);				
+		}
+	}
+	return NULL;
+}
+struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
+{
+	struct NodoSede *rec=head;
+	
+	if(head!=NULL)
+	{
+		while(rec!=NULL)
+		{
+			if(rec->sede->codigoSede==codigo)
+			{
+				return rec->sede;
+			}
+		}
+		rec=rec->sig;
+	}
+	return NULL;
+}
+
+void cuentaPersonasSede(struct NodoSede *head)
+{
+	int contador=0;
+	struct NodoSede *rec=head;
+	while(rec!=NULL)
+	{
+		rec=rec->sig;	
+		contador++;
+	}
+	
+	print("En esta sede hay %d Personas registradas");
 }
