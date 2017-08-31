@@ -292,8 +292,8 @@ struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
 			{
 				return rec->sede;
 			}
+			rec=rec->sig;
 		}
-		rec=rec->sig;
 	}
 	return NULL;
 }
@@ -308,5 +308,5 @@ void cuentaPersonasSede(struct NodoSede *head)
 		contador++;
 	}
 
-	print("En esta sede hay %d Personas registradas");
+	printf("En esta sede hay %d Personas registradas",contador);
 }
