@@ -266,7 +266,7 @@ int comprobarRut (char *rut)
 
 int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede)
 {
-	int i;
+	int i,aux;
 	struct NodoSede *tmp;
 
 	for(i=0;i<arreglo->pLibre;i++)//recorremos el arreglo de Regiones
@@ -275,10 +275,10 @@ int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede)
 		{
 			tmp= buscarSede(arreglo[i]->sede,codigoSede);
 
-			cuentaPersonasSede(tmp);
+			aux=cuentaPersonasSede(tmp);
 		}
 	}
-	return NULL;
+	return aux;
 }
 struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
 {
@@ -297,8 +297,7 @@ struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
 	}
 	return NULL;
 }
-
-void cuentaPersonasSede(struct NodoSede *head)
+int cuentaPersonasSede(struct NodoSede *head)
 {
 	int contador=0;
 	struct NodoSede *rec=head;
@@ -308,5 +307,5 @@ void cuentaPersonasSede(struct NodoSede *head)
 		contador++;
 	}
 
-	printf("En esta sede hay %d Personas registradas",contador);
+	return contador;
 }
