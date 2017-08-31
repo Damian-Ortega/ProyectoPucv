@@ -9,15 +9,7 @@ struct Persona
 	char *nombre;
 	char *rut;
 	int edad;
-	struct fechaNacimiento fecha;
 	int puntajeRiesgoSocial;
-};
-
-struct fechaNacimiento
-{
-    int dia;
-    int mes;
-    int anio;
 };
 
 struct nodoPersona{
@@ -40,7 +32,7 @@ struct NodoSede
 	struct NodoSede *sig;
 };
 
-struct Region 
+struct Region
 {
 	char *Nombre;
 	int pLibre;
@@ -57,12 +49,7 @@ struct Persona *eliminarPersona(char *rut,struct nodoPersona *head);
 struct Persona *modificarPersona(char *rut,)
 struct Persona *buscarPersona(char *rut,struct nodoPersona *head);
 int agregarPersona(struct Persona *nuevo,struct nodoPersona *head);
-int calcularEdad(int dia,int mes,int anio);
-void mostrarNinos();
-void mostrarTodosLosNinos();
-void mostrarNinosSede();
-void mostrarNinosRegion();
-void enlazarPersona();
+
 
 /*
 	~Region~
@@ -112,14 +99,14 @@ struct Persona *crearPersona(char *nombre,char *rut,int edad,int dia,int mes,int
     return nuevo;
 };
 
-struct nodoPersona crearNodoPersona(struct Persona *nuevo,struct nodoPersona *sig,struct nodoPersona *ant)
+struct nodoPersona *crearNodoPersona(struct Persona *nuevo,struct nodoPersona *sig,struct nodoPersona *ant)
 {
     struct nodoPersona nuevoNodo;
     nuevoNodo=(struct nodoPersona*)malloc(sizeof(struct nodoPersona));
     nuevoNodo->persona=nuevo;
     nuevoNodo->sig=sig;
     nuevoNodo->ant=ant;
-    
+
     return nuevoNodo;
 }
 
@@ -142,17 +129,34 @@ struct Persona *buscarPersona(char *rut,struct nodoPersona *head)
     return NULL;
 }
 
+int agregarPersona(struct Persona *nuevo,struct nodoPersona *head)
+{
+    struct nodoPersona *rec;
+    rec=head;
+
+    while(rec!=NULL)
+    {
+        rec=rec->sig;
+    }
+
+    rec->sig=crearNodoPersona(nuevo,NULL,rec);
+
+    return 1;
+}
+
+
+
 int crearRegion(struct Region *arreglo,char *nombre,int pLibre)
 {
 	struct Region *nuevo=(struct Sede *)malloc(sizeof(struct Sede));
-	
+
 	nuevo->nombre=(char*)malloc(sizeof(char *));
 	strcpy(nuevo->nombre,nombre);
 	nuevo->codigoSede=codigo;
-	
+
 	nuevo->sede =NULL;
 	nuevo->pLibre=0;
-	
+
 	for(i=0;i<=pLibre;i++)
 	{
 		if(arreglo[i]==NULL)
@@ -161,13 +165,13 @@ int crearRegion(struct Region *arreglo,char *nombre,int pLibre)
 			return 1
 		}
 	}
-	return 0;//el arreglo esta lleno 	
+	return 0;//el arreglo esta lleno
 }
 
 int eliminarRegion(struct Region *arreglo,char *nombre, int pLibre)
 {
 	int i;
-	
+
 	for(i=0;i<pLibre;i++)
 	{
 		if((strcmp(arreglo[i]->Nombre,nombre))==0)
@@ -183,15 +187,15 @@ int eliminarRegion(struct Region *arreglo,char *nombre, int pLibre)
 struct Sede *CrearSede(int codigo ,char *direccion)
 {
 	struct Sede *nuevo=(struct Sede*)malloc(sizeof(struct Sede));
-	
+
 	nuevo->codigoSede=codigo;
 	nuevo->direccion=(char*)malloc(sizeof(char*));
 	strcpy(nuevo->direccion,direccion);
-	
+
 	nuevo->persona=null;
-	
+
 	return nuevo;
-	
+
 }
 
 struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig)
@@ -199,14 +203,14 @@ struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig)
 	struct NodoSede *nodo=(struct NodoSede*)malloc(sizeof(struct NodoSede));
 	nodo->sede=nuevo;
 	nodo->sig=NULL;
-	
+
 	return nodo;
 }
 
 struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo)
 {
 	struct NodoSede *tmp=lista;
-	
+
 	if(tmp->sede->codigoSede== codigo)
 	{
 		lista=lista->sig;
@@ -222,7 +226,7 @@ struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo)
 		tmp->sig = tmp->sig->sig;
 	}
 	return lista;
-	
+
 }
 
 int comprobarRut (char *rut)
@@ -250,14 +254,14 @@ int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede)
 {
 	int i;
 	struct NodoSede *tmp;
-	
+
 	for(i=0;i<arreglo->pLibre;i++)//recorremos el arreglo de Regiones
 	{
 		if(buscarSede(arreglo[i]->sede,codigoSede)!=NULL)
 		{
 			tmp= buscarSede(arreglo[i]->sede,codigoSede);
-			
-			cuentaPersonasSede(tmp);				
+
+			cuentaPersonasSede(tmp);
 		}
 	}
 	return NULL;
@@ -265,7 +269,7 @@ int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede)
 struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
 {
 	struct NodoSede *rec=head;
-	
+
 	if(head!=NULL)
 	{
 		while(rec!=NULL)
@@ -286,9 +290,9 @@ void cuentaPersonasSede(struct NodoSede *head)
 	struct NodoSede *rec=head;
 	while(rec!=NULL)
 	{
-		rec=rec->sig;	
+		rec=rec->sig;
 		contador++;
 	}
-	
+
 	print("En esta sede hay %d Personas registradas");
 }
