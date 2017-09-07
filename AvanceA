@@ -71,7 +71,7 @@ struct Sede *CrearSede(int codigo ,char *direccion);
 struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig);
 struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo);
 struct NodoSede *buscarSede(struct NodoSede *head ,int codigo);
-struct Sede *ModificarSede(struct nodoSede *head,int codigo);
+struct Sede *ModificarSede(struct Region **arreglo,int codigo,char *direccion);
 int agregarSede(struct Sede *nuevo,struct Nodosede *head);
 
 /*
@@ -305,10 +305,21 @@ int main()
 								printf("La sede no se encuentra");
 							}
 							else
-							{
-								=EliminarSede(arreglo,codigoSede);
-							}
+							{	
+								printf("Ingrese Nueva Direccion ");
+								scanf("%s",buffer);
+								modifaicado=ModificarSede(&&arreglo,codigoSede,buffer);
 								
+								if(modificado=1)
+								{
+									printf("sede modificada correctamente");
+								}
+								else
+								{
+									printf("No se pudo modificar la sede");
+								}
+							}
+							free(buffer);
 						break;
 						case 2:
 						break;
