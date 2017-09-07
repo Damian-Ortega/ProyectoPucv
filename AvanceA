@@ -715,12 +715,14 @@ struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
 	return NULL;
 }
 
-int cuentaPersonasSede(struct NodoSede *head)
+int cuentaPersonasSede(struct NodoSede *head,codigoSede)
 {
 	int contador=0;
-	struct NodoSede *rec=head;
-	while(rec!=NULL)
-	{
+	struct NodoPersona *rec=head->sede->persona;
+	struct NodoSede *cabeza=head;
+	while(rec!=NULL && head->sede->codigoSede==codigoSede)
+	{	
+		
 		rec=rec->sig;
 		contador++;
 	}
