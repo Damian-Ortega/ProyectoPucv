@@ -40,7 +40,7 @@ struct Region
 {
 	char *Nombre;
 	int pLibre;
-	struct Sede *sede;
+	struct NodoSede *sede;
 };
 
 
@@ -50,7 +50,7 @@ struct Region
 
 struct Persona *crearPersona(char *nombre,char *rut,int edad);
 struct Persona *eliminarPersona(char *rut,struct NodoPersona *head); //falta
-struct Persona *modificarPersona(char *rut);
+struct Persona *modificarPersona(char *rut,struct Region **arreglo,char *nombre,int edad);
 struct Persona *buscarPersona(char *rut,struct NodoPersona *head);
 int agregarPersona(struct Persona *nuevo,struct NodoPersona *head);
 
@@ -62,6 +62,8 @@ int crearRegion(struct Region *arreglo,char *nombre,int pLibre);
 int eliminarRegion(struct Region *arreglo,char *nombre);
 int hayRegiones(struct Region *arreglo);
 struct Region *buscarRegion(struct Region *arreglo,char *nombre);
+int cantidadSedeEnRegion(struct Region *arreglo, char *nombre); // falta
+int cantidadPerosonasEnRegion(struct Region *arreglo); //falta 
 
 /*
 	~Sede~
@@ -83,10 +85,13 @@ int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede);
 void cuentaPersonasSede(struct NodoSede *head);
 
 
+
 int main()
 {
 	struct Region *arreglo=(struct Region *)malloc(sizeof(struct Region)*MAXREGION);
-	struct nodoSede *elimSede;
+	struct NodoSede *auxSede;
+	struct Region *aux;
+	struct Persona *auxPersona;
 	int op,opcion,i,edad,codigoSede,agregado,eliminado;
 	char buffer[30],buffer2[30],rut[9];
 	
@@ -322,8 +327,34 @@ int main()
 							free(buffer);
 						break;
 						case 2:
-						break;
-						case 3:
+							do
+							{
+								printf("ingrese rut sin puntos y con guion");
+								scanf("%s",&rut);
+							}while(comprobarRut(rut)==0);
+							
+							if(buscarPersonaEnSedes(arreglo,rut)==NULL)
+							{
+								printf("La persona no se encuentra registrada");
+							}
+							else
+							{
+								printf("ingrese nuevo Nombre");
+								scanf("%s",&buffer);
+								printf("ingrese nueva Edad");
+								scanf("%d",edad);
+								modificado=modificarPersona(rut,&&arreglo,buffer,edad);	
+								
+								if(modificado=1)
+								{
+									printf("Persona modificada correctamente");
+								}
+								else
+								{
+									printf("No se pudo modificar la Persona");
+								}
+							}
+							free(buffer);
 						break;
 						case 0:
 							exit(0);
@@ -347,10 +378,62 @@ int main()
 					switch(opcion)
 					{
 						case 1:
+							printf("ingrese nombre de la Region");
+							scanf("%s",&buffer);
+							
+							aux=buscarRegion(arreglo,buffer);
+							
+							if(aux==NULL)
+							{
+								printf("no se encontro la region o esta mal escrita");
+							}
+							else
+							{
+								printf("Region: %s\n",aux->Nombre);
+								printf("Cantidad de sedes: %d\n",cantidadSedeEnRegion(arreglo,buffer));
+								printf("cantidad de Personas: %d\n",cantidadPerosonasEnRegion(arreglo));
+							}
+							free(buffer);
 						break;
 						case 2:
+							printf("ingrese codigo de sede\n");
+							scanf("%d",&codigoSede);
+							
+							auxSede=buscarSede(arreglo,codigo)
+							
+							if(auxSede==NULL)
+							{
+								printf("no se encontro la sede \n");
+							}
+							else
+							{
+								printf("Codigo Sede: %d",codigoSede);
+								printf("Direccion: %s",auxSede->sede->direccion);
+								printf("Cantidad de Personas en Sede: %d",cantidadPersonasEnSede(arreglo,codigoSede);
+								
+							}
+							
 						break;
 						case 3:
+							do
+							{
+								printf("ingrese Rut de la person sin puntos y con guion");
+								scanf("%s",&rut);
+							}while(comprobarRut(rut)==0);
+							
+							auxPersona=buscarPersona(rut,arreglo);
+							
+							if(auxPersona==NULL)
+							{
+								printf("la persona no existe \n");
+							}
+							else
+							{
+								printf("RUT: %s",rut);
+								printf("Nombre: %s",auxPersona->nombre);
+								printf("Edad: %d",auxPersona->edad);
+								printf("puntaje Riesgo Social: %d",auxPersona->puntajeRiesgoSocial);
+							}
 						break;
 						case 0:
 							exit(0);
