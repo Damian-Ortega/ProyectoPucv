@@ -49,10 +49,11 @@ struct Region
 */
 
 struct Persona *crearPersona(char *nombre,char *rut,int edad);
-struct Persona *eliminarPersona(char *rut,struct NodoPersona *head); //falta
-struct Persona *modificarPersona(char *rut,struct Region **arreglo,char *nombre,int edad);
-struct Persona *buscarPersona(char *rut,struct NodoPersona *head);
-int agregarPersona(struct Persona *nuevo,struct NodoPersona *head);
+struct Persona *eliminarPersona(struct Region **regiones,char *rut) //falta
+struct Persona *modificarPersona(char *rut);//falta
+struct Persona *buscarPersonaEnUnaSede(struct NodoPersona *head,char *rut);
+struct Persona *buscarPersonaEnSedes(struct Region **regiones,char *rut);
+int agregarPersona()
 
 /*
 	~Region~
@@ -62,8 +63,6 @@ int crearRegion(struct Region *arreglo,char *nombre,int pLibre);
 int eliminarRegion(struct Region *arreglo,char *nombre);
 int hayRegiones(struct Region *arreglo);
 struct Region *buscarRegion(struct Region *arreglo,char *nombre);
-int cantidadSedeEnRegion(struct Region *arreglo, char *nombre); // falta
-int cantidadPerosonasEnRegion(struct Region *arreglo); //falta 
 
 /*
 	~Sede~
@@ -73,7 +72,7 @@ struct Sede *CrearSede(int codigo ,char *direccion);
 struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig);
 struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo);
 struct NodoSede *buscarSede(struct NodoSede *head ,int codigo);
-struct Sede *ModificarSede(struct Region **arreglo,int codigo,char *direccion);
+struct Sede *ModificarSede(struct nodoSede *head,int codigo);
 int agregarSede(struct Sede *nuevo,struct Nodosede *head);
 
 /*
@@ -83,8 +82,6 @@ int agregarSede(struct Sede *nuevo,struct Nodosede *head);
 int comprobarRut(char *rut);
 int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede);
 void cuentaPersonasSede(struct NodoSede *head);
-
-
 
 int main()
 {
@@ -458,6 +455,8 @@ int main()
 		
 }
 
+//Funciones de personas
+
 struct Persona *crearPersona(char *nombre,char *rut,int edad)
 {
     struct Persona *nuevo;
@@ -473,18 +472,11 @@ struct Persona *crearPersona(char *nombre,char *rut,int edad)
     return nuevo;
 };
 
-int eliminarPersona(struct Region **arreglo,char *rut)
-{
-	struct NodoPersona *rec=*arreglo->sede->persona;
-	struct NodoPersona *aux;
-	
-	aux=buscarPersona(rut,arreglo);
-	
-}
 
-struct NodoPersona *crearNodoPersona(struct Persona *nuevo,struct NodoPersona *sig,nodoPersona *ant)
+
+struct NodoPersona *crearNodoPersona(struct Persona *nuevo,struct NodoPersona *sig,struct NodoPersona *ant)
 {
-    struct NodoPersona nuevoNodo;
+    struct NodoPersona *nuevoNodo;
     nuevoNodo=(struct NodoPersona*)malloc(sizeof(struct NodoPersona));
     nuevoNodo->persona=nuevo;
     nuevoNodo->sig=sig;
@@ -494,40 +486,47 @@ struct NodoPersona *crearNodoPersona(struct Persona *nuevo,struct NodoPersona *s
 }
 
 
-struct Persona *buscarPersona(char *rut,struct NodoPersona *head)
+struct Persona *buscarPersonaEnUnaSede(struct NodoPersona *head,char *rut)
 {
     struct NodoPersona *rec;
+
     rec=head;
 
     while(rec!=NULL)
     {
-        if(strcmp(rec->persona->rut,rut)==0)
+        if(strcasecmp(rut,rec->persona->rut)==0)
         {
-            return rec;
+            return rec->persona;
         }
-
         rec=rec->sig;
     }
 
     return NULL;
 }
 
-int agregarPersona(struct Persona *nuevo,struct NodoPersona *head)
+struct Persona *buscarPersonaEnSedes(struct Region **regiones,char *rut)
 {
-    struct NodoPersona *rec;
-    rec=head;
+    struct NodoSede *rec;
+    int i;
 
-    while(rec!=NULL)
+    for(i=0;i<MAXREGION;i++)
     {
-        rec=rec->sig;
+        rec=regiones[i]->sede;
+
+        while(rec!=NULL)
+        {
+            if(buscarPersonaEnUnaSede(rec->sede->persona,rut)!=NULL)
+            {
+                return buscarPersonaEnUnaSede(rec->sede->persona,rut);
+            }
+            rec=rec->sig;
+        }
     }
-
-    rec=crearNodoPersona(nuevo,NULL,rec->ant);
-
-    return 1;
-}
+};
 
 
+
+//Funciones de region
 
 int crearRegion(struct Region *arreglo,char *nombre,int pLibre)
 {
@@ -571,7 +570,7 @@ int eliminarRegion(struct Region *arreglo,char *nombre)
 struct Region *buscarRegion(struct Region *arreglo,char *nombre)
 {
 	int i;
-	
+
 	for(i=0;i<MAXREGION;i++)
 	{
 		if((strcmp(arreglo[i]->Nombre,nombre)) == 0)
@@ -580,13 +579,13 @@ struct Region *buscarRegion(struct Region *arreglo,char *nombre)
 		}
 	}
 	return NULL;
-	
+
 }
 
 int hayRegiones(struct Region *arreglo)
 {
 	int i;
-	
+
 	for(i=0;i<MAXREGION;i++)
 	{
 		if(arreglo[i]==NULL)
@@ -596,6 +595,8 @@ int hayRegiones(struct Region *arreglo)
 	}
 	return 0;
 }
+
+//Funciones Sedes
 
 struct Sede *CrearSede(int codigo ,char *direccion,char *regionUbicada)
 {
@@ -650,7 +651,7 @@ struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo)
 	else
 	{
 		tmp=buscarSede(lista,codigo);
-		
+
 		free(tmp->sig);
 		tmp->sig = tmp->sig->sig;
 	}
@@ -695,6 +696,7 @@ int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede)
 	}
 	return aux;
 }
+
 struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
 {
 	struct NodoSede *rec=head;
@@ -712,6 +714,7 @@ struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
 	}
 	return NULL;
 }
+
 int cuentaPersonasSede(struct NodoSede *head)
 {
 	int contador=0;
