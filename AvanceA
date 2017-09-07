@@ -388,7 +388,7 @@ int main()
 							{
 								printf("Region: %s\n",aux->Nombre);
 								printf("Cantidad de sedes: %d\n",cantidadSedeEnRegion(arreglo,buffer));
-								printf("cantidad de Personas: %d\n",cantidadPerosonasEnRegion(arreglo));
+								printf("cantidad de Personas: %d\n",cantidadPersonasEnRegion(arreglo));
 							}
 							free(buffer);
 						break;
@@ -728,4 +728,56 @@ int cuentaPersonasSede(struct NodoSede *head,codigoSede)
 	}
 
 	return contador;
+}
+
+int cantidadSedeEnRegion(struct Region *arreglo,char region){
+	
+	struct Region *aux;
+	struct NodoSede *rec;
+	int cont=0;
+	aux=buscarRegion(arreglo,region);
+	
+	if(aux==NULL)
+	{
+		return 0;
+	}
+	else
+	{
+		for(i=0;i<MAXREGION;i++)
+		{
+			if(strcmp(region,arreglo[i]->Nombre)==0)
+			{
+				rec=arreglo[i]->sede;
+				while(rec!=NULL)
+				{	
+					rec=rec->sig;
+					cont++;
+				}
+				return cont;
+			}
+			
+		}
+	
+}
+
+int cantidadPersonasEnRegion(struct Region *arreglo,char *region)
+{
+	int contador=0;
+	struct NodoSede rec;
+	
+	for(i=0;i<MAXREGION;i++)
+	{
+		if(strcmp(region,arreglo[i]->Nombre)==0)
+		{
+			rec=arreglo[i]->sede;
+			
+			while(rec!=NULL)
+			{
+				contador=cuentaPersonasSede(rec,rec->sede->codigoSede) + contador;
+				rec=rec->sig;
+			}
+			return contador;
+		}
+	}
+	return 0,
 }
