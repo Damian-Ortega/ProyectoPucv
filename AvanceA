@@ -49,11 +49,10 @@ struct Region
 */
 
 struct Persona *crearPersona(char *nombre,char *rut,int edad);
-struct Persona *eliminarPersona(char *rut,struct NodoPersona *head);
+struct Persona *eliminarPersona(char *rut,struct NodoPersona *head); //falta
 struct Persona *modificarPersona(char *rut);
 struct Persona *buscarPersona(char *rut,struct NodoPersona *head);
 int agregarPersona(struct Persona *nuevo,struct NodoPersona *head);
-
 
 /*
 	~Region~
@@ -62,7 +61,7 @@ int agregarPersona(struct Persona *nuevo,struct NodoPersona *head);
 int crearRegion(struct Region *arreglo,char *nombre,int pLibre);
 int eliminarRegion(struct Region *arreglo,char *nombre);
 int hayRegiones(struct Region *arreglo);
-struct Region *Buscar Region(struct Region *arreglo,char *nombre);
+struct Region *buscarRegion(struct Region *arreglo,char *nombre);
 
 /*
 	~Sede~
@@ -71,7 +70,8 @@ struct Region *Buscar Region(struct Region *arreglo,char *nombre);
 struct Sede *CrearSede(int codigo ,char *direccion);
 struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig);
 struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo);
-struct NodoSede *buscarSede(struct NodoSede *head ,int codigoSede);
+struct NodoSede *buscarSede(struct NodoSede *head ,int codigo);
+struct Sede *ModificarSede(struct nodoSede *head,int codigo);
 int agregarSede(struct Sede *nuevo,struct Nodosede *head);
 
 /*
@@ -88,7 +88,7 @@ int main()
 	struct Region *arreglo=(struct Region *)malloc(sizeof(struct Region)*MAXREGION);
 	struct nodoSede *elimSede;
 	int op,opcion,i,edad,codigoSede,agregado,eliminado;
-	char buffer[30],buffer2[30];
+	char buffer[30],buffer2[30],rut[9];
 	
 	arreglo->pLibre=0;
 	
@@ -223,38 +223,14 @@ int main()
 			case 2:
 				do
 				{
-					printf("1)ELiminar Región\n");
-					printf("2)ELiminar Sede\n");
-					printf("3)ELiminar Persona\n");
+					printf("1)ELiminar Sede\n");
+					printf("2)ELiminar Persona\n");
 					printf("0)Salir \n");
 					scanf("%d",&opcion);
 					system("cls");
 					switch(opcion)
 					{
 						case 1:
-							
-							printf("ingrese Nombre de la region");
-							scanf("%s",&buffer);
-							if(buscarRegion(arreglo,buffer)==NULL)
-							{
-								printf("La region no se encuentra");
-							}
-							else
-							{
-								eliminado=eliminarRegion(arreglo,buffer);
-							}
-							
-							if(elimando==1)
-							{
-								printf("region eliminada Correctamente");
-							}
-							else
-							{
-								printf("No se puedo eliminar la región")	
-							}
-							free(buffer);
-						break;
-						case 2:
 							
 							printf("ingrese Codigo de la sede");
 							scanf("%d",&codigoSede);
@@ -267,10 +243,10 @@ int main()
 								elimSede=EliminarSede(arreglo,codigoSede);
 							}
 							 //si se elimina una sede se deben distribuir los niños de la sede
-							
+							 
 							if(elimSede==NULL)
 							{
-								prinf("No se pudo Eliminar")
+								printf("No se pudo Eliminar");
 							}
 							else
 							{
@@ -278,7 +254,26 @@ int main()
 							}
 							
 						break;
-						case 3:
+						case 2:
+							
+							do
+							{	
+								free(rut);
+								printf("ingrese rut sin puntos ni guion");
+								scanf("%s",rut);
+							}while(comprobarRut(rut)==0);
+							
+							if(buscarPersona(rut,arreglo->sede->persona)!=NULL)
+							{
+								if(eliminarPersona(rut,&&arreglo)!=NULL)
+								{
+									printf("La persona no se pudo eliminar");
+								}
+								else
+								{
+									printf("Persona eliminada correctamente");
+								}
+							}
 						break;
 						case 0:
 							exit(0);
@@ -294,15 +289,26 @@ int main()
 			case 3:
 				do
 				{
-					printf("1)Modificar Región\n");
-					printf("2)Modificar Sede\n");
-					printf("3)Modificar Persona\n");
+					printf("1)Modificar Sede\n");
+					printf("2)Modificar Persona \n");
 					printf("0)Salir \n");
 					scanf("%d",&opcion);
 					system("cls");
 					switch(opcion)
 					{
 						case 1:
+								
+							printf("ingrese Codigo de la sede");
+							scanf("%d",&codigoSede);
+							if(buscarSede(arreglo,codigoSede)==NULL)
+							{
+								printf("La sede no se encuentra");
+							}
+							else
+							{
+								=EliminarSede(arreglo,codigoSede);
+							}
+								
 						break;
 						case 2:
 						break;
@@ -372,6 +378,15 @@ struct Persona *crearPersona(char *nombre,char *rut,int edad)
 
     return nuevo;
 };
+
+int eliminarPersona(struct Region **arreglo,char *rut)
+{
+	struct NodoPersona *rec=*arreglo->sede->persona;
+	struct NodoPersona *aux;
+	
+	aux=buscarPersona(rut,arreglo);
+	
+}
 
 struct NodoPersona *crearNodoPersona(struct Persona *nuevo,struct NodoPersona *sig,nodoPersona *ant)
 {
