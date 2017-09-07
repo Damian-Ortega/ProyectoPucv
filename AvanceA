@@ -26,7 +26,6 @@ struct NodoPersona{
 struct Sede
 {
 	char *direccion;
-+
 	int codigoSede;
 	struct NodoPersona *persona;
 };
@@ -51,7 +50,7 @@ struct Region
 
 struct Persona *crearPersona(char *nombre,char *rut,int edad);
 struct Persona *eliminarPersona(char *rut,struct NodoPersona *head);
-struct Persona *modificarPersona(char *rut,);
+struct Persona *modificarPersona(char *rut);
 struct Persona *buscarPersona(char *rut,struct NodoPersona *head);
 int agregarPersona(struct Persona *nuevo,struct NodoPersona *head);
 
@@ -61,8 +60,9 @@ int agregarPersona(struct Persona *nuevo,struct NodoPersona *head);
 */
 
 int crearRegion(struct Region *arreglo,char *nombre,int pLibre);
-int eliminarRegion(struct Region *arreglo,char *nombre, int pLibre);
-int cantidadRegiones(struct Region *arreglo)
+int eliminarRegion(struct Region *arreglo,char *nombre);
+int hayRegiones(struct Region *arreglo);
+struct Region *Buscar Region(struct Region *arreglo,char *nombre);
 
 /*
 	~Sede~
@@ -71,7 +71,7 @@ int cantidadRegiones(struct Region *arreglo)
 struct Sede *CrearSede(int codigo ,char *direccion);
 struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig);
 struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo);
-struct NodoSede *buscarSede(struct NodoSede *head ,int codigo);
+struct NodoSede *buscarSede(struct NodoSede *head ,int codigoSede);
 int agregarSede(struct Sede *nuevo,struct Nodosede *head);
 
 /*
@@ -86,7 +86,8 @@ void cuentaPersonasSede(struct NodoSede *head);
 int main()
 {
 	struct Region *arreglo=(struct Region *)malloc(sizeof(struct Region)*MAXREGION);
-	int op,opcion,i,edad;
+	struct nodoSede *elimSede;
+	int op,opcion,i,edad,codigoSede,agregado,eliminado;
 	char buffer[30],buffer2[30];
 	
 	arreglo->pLibre=0;
@@ -99,7 +100,7 @@ int main()
 		printf("3)Modificar \n");
 		printf("4)Buscar \n");
 		printf("0)salir \n");
-		scarnf("%d",&op);
+		scanf("%d",&op);
 		
 		system("cls");
 		switch(op)
@@ -117,13 +118,13 @@ int main()
 					{
 						case 1:
 
-							if(cantidadRegiones(arreglo)==0)
+							if(hayRegiones(arreglo)==0)
 							{
 								printf("No se pueden agregar Mas Regiones");
 							}
 							else
 							{
-								print("ingrese Nombre Region");
+								printf("ingrese Nombre Region");
 								scanf("%s",&buffer);
 								crearRegion(arreglo,buffer,arreglo->pLibre);
 								
@@ -136,7 +137,7 @@ int main()
 							printf("ingrese codigo de Sede");
 							scanf("%d",&codigoSede);
 							
-							if(buscarSede(head,codigoSede)!=NULL)
+							if(buscarSede(arreglo->sede,codigoSede) != NULL)
 							{
 								printf("El Codigo ya existe");
 								exit(0);
@@ -160,8 +161,7 @@ int main()
 							free(buffer2);
 						break;
 						case 3:
-							
-							int agreagado;
+						
 							struct Persona *nuevo;
 							struct NodoPersona *nuevoNodo;	
 							do
@@ -232,8 +232,51 @@ int main()
 					switch(opcion)
 					{
 						case 1:
+							
+							printf("ingrese Nombre de la region");
+							scanf("%s",&buffer);
+							if(buscarRegion(arreglo,buffer)==NULL)
+							{
+								printf("La region no se encuentra");
+							}
+							else
+							{
+								eliminado=eliminarRegion(arreglo,buffer);
+							}
+							
+							if(elimando==1)
+							{
+								printf("region eliminada Correctamente");
+							}
+							else
+							{
+								printf("No se puedo eliminar la región")	
+							}
+							free(buffer);
 						break;
 						case 2:
+							
+							printf("ingrese Codigo de la sede");
+							scanf("%d",&codigoSede);
+							if(buscarSede(arreglo,codigoSede)==NULL)
+							{
+								printf("La sede no se encuentra");
+							}
+							else
+							{
+								elimSede=EliminarSede(arreglo,codigoSede);
+							}
+							 //si se elimina una sede se deben distribuir los niños de la sede
+							
+							if(elimSede==NULL)
+							{
+								prinf("No se pudo Eliminar")
+							}
+							else
+							{
+								printf("Sede Eliminada Correctamente");
+							}
+							
 						break;
 						case 3:
 						break;
@@ -399,23 +442,39 @@ int crearRegion(struct Region *arreglo,char *nombre,int pLibre)
 	return 0;//el arreglo esta lleno
 }
 
-int eliminarRegion(struct Region *arreglo,char *nombre, int pLibre)
+int eliminarRegion(struct Region *arreglo,char *nombre)
 {
 	int i;
 
-	for(i=0;i<pLibre;i++)
+	for(i=0;i<arreglo->pLibre;i++)
 	{
 		if((strcmp(arreglo[i]->Nombre,nombre))==0)
 		{
-			arreglo[i]=arreglo[pLibre-1];
-			arreglo[pLibre-1]=NULL;
+			arreglo[i]=arreglo[arreglo->pLibre-1];
+			arreglo[arreglo->pLibre-1]=NULL;
 			arreglo->pLibre--;
 			return 1;
 		}
 	}
 	return 0; //no se encontro la Region
 }
-int cantidadRegiones(struct Region *arreglo)
+
+struct Region *buscarRegion(struct Region *arreglo,char *nombre)
+{
+	int i;
+	
+	for(i=0;i<MAXREGION;i++)
+	{
+		if((strcmp(arreglo[i]->Nombre,nombre)) == 0)
+		{
+			return arreglo[i];
+		}
+	}
+	return NULL;
+	
+}
+
+int hayRegiones(struct Region *arreglo)
 {
 	int i;
 	
