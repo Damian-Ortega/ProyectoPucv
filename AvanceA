@@ -49,11 +49,12 @@ struct Region
 */
 
 struct Persona *crearPersona(char *nombre,char *rut,int edad);
-struct Persona *eliminarPersona(struct Region **regiones,char *rut) //falta
+struct Persona *eliminarPersona(struct Region **regiones,char *rut); //falta
 struct Persona *modificarPersona(char *rut);//falta
 struct Persona *buscarPersonaEnUnaSede(struct NodoPersona *head,char *rut);
 struct Persona *buscarPersonaEnSedes(struct Region **regiones,char *rut);
-int agregarPersona()
+struct NodoPersona *crearNodoPersona(struct Persona *nuevo,struct NodoPersona *sig,struct NodoPersona *ant);
+int agregarPersona();
 
 /*
 	~Region~
@@ -68,12 +69,12 @@ struct Region *buscarRegion(struct Region *arreglo,char *nombre);
 	~Sede~
 */
 
-struct Sede *CrearSede(int codigo ,char *direccion);
+struct Sede *CrearSede(int codigo ,char *direccion,char *regionUbicada);
 struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig);
 struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo);
 struct NodoSede *buscarSede(struct NodoSede *head ,int codigo);
 struct Sede *ModificarSede(struct nodoSede *head,int codigo);
-int agregarSede(struct Sede *nuevo,struct Nodosede *head);
+int agregarSede(struct Sede *nuevo,struct NodoSede *head);
 
 /*
     Funciones Extras
@@ -87,8 +88,10 @@ int main()
 {
 	struct Region *arreglo=(struct Region *)malloc(sizeof(struct Region)*MAXREGION);
 	struct NodoSede *auxSede;
+	struct Sede *nuevo;
 	struct Region *aux;
 	struct Persona *auxPersona;
+	struct NodoPersona nuevoNodo;
 	int op,opcion,i,edad,codigoSede,agregado,eliminado;
 	char buffer[30],buffer2[30],rut[9];
 	
@@ -147,17 +150,17 @@ int main()
 							
 							printf("ingrese Direccion");
 							scanf("%s",&buffer);
-							print("ingrese Region en la que ubica la sede");
+							printf("ingrese Region en la que ubica la sede");
 							scanf("%s",&buffer2);
 							
-							nuevo=crearSede(codigoSede,buffer,buffer2);
+							nuevo=CrearSede(codigoSede,buffer,buffer2);
 							if(agregarSede(nuevo,arreglo->sede)==1)
 							{
 								printf("Sede Agregada Correctamente");
 							}
 							else
 							{
-								print("No se pudo agregar la Sede");
+								printf("No se pudo agregar la Sede");
 							}
 							free(buffer);
 							free(buffer2);
@@ -169,25 +172,25 @@ int main()
 							do
 							{
 								printf("\ningrese Rut");
-								scanf("%s",&buffer);
-								if(comprobarRut(buffer)==0)
+								scanf("%s",&rut);
+								if(comprobarRut(rut)==0)
 								{
 									printf("\nrut invalido");
-									free(buffer);
+									free(rut);
 								}
-							}while(comprobarRut(buffer)!=0)
+							}while(comprobarRut(buffer)!=0);
 							
-							if(buscarPersona(char *rut,struct NodoPersona *head)!= NULL)
+							if(buscarPersonaEnSedes(&arreglo,rut)!= NULL)
 							{
 								printf("La persona ya existe");
 								exit(0);
 							}
 							printf("\nIngrese nombre");
-							scanf("%s",&buffer2);
+							scanf("%s",&buffer);
 							printf("\nIngrese edad");
 							scanf("%d",&edad);
 							
-							nuevo=crearPersona(buffer,buffer2,edad);
+							nuevo=crearPersona(rut,buffer,edad);
 							if(arreglo->sede->persona==NULL)
 							{
 								nuevoNodo=crearNodoPersona(nuevo,nuevoNodo->sig,nuevoNodo->ant);
