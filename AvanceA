@@ -48,12 +48,12 @@ struct Region
 */
 
 struct Persona *crearPersona(char *nombre,char *rut,int edad);
-struct Persona *eliminarPersona(struct Region **regiones,char *rut); //falta
 struct Persona *modificarPersona(char *rut);//falta
 struct Persona *buscarPersonaEnUnaSede(struct NodoPersona *head,char *rut);
 struct Persona *buscarPersonaEnSedes(struct Region **regiones,char *rut);
 struct NodoPersona *crearNodoPersona(struct Persona *nuevo,struct NodoPersona *sig,struct NodoPersona *ant);
 int agregarPersona(struct Persona *nuevo,struct Persona *ant,int codigoSede,struct Region **regiones);
+int *eliminarPersona(struct NodoPersona **lista,int codigoSede,char *rut)
 
 /*
 	~Region~
