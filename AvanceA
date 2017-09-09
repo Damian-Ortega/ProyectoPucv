@@ -653,20 +653,39 @@ struct NodoSede *CrearNodoSede(struct Sede *nuevo,struct NodoSede *sig)
 	return nodo;
 }
 
-int agregarSede(struct Sede *nuevo,struct Nodosede *head)
+struct Sede *buscarSedeEnUnaRegion(struct NodoSede *head,int codigoSede)
 {
     struct NodoSede *rec;
+
     rec=head;
 
-    while(rec=!NULL)
+    while(rec!=NULL)
     {
+        if(rec->sede->codigoSede == codigoSede)
+        {
+            return rec->sede;
+        }
+
         rec=rec->sig;
     }
 
-    rec=crearNodoSede(nuevo,NULL);
+    return NULL;
+};
 
-    return 1;
-}
+struct Sede *buscarSedeEnRegiones(struct Region **regiones,int codigoSede)
+{
+    int i;
+
+    for(i=0;i<MAXREGIONES;i++)
+    {
+        if(buscarSedeEnUnaRegion(regiones[i]->sede,codigoSede)!=NULL)
+        {
+            return buscarSedeEnUnaRegion(regiones[i]->sede,codigoSede);
+        }
+    }
+
+    return NULL;
+};
 
 struct NodoSede *EliminarSede(struct  NodoSede *lista, int codigo)
 {
@@ -725,6 +744,21 @@ int cantidadPersonasEnSede(struct Region **arreglo,int codigoSede)
 		}
 	}
 	return aux;
+}
+
+int agregarSede(struct Sede *nuevo,struct Nodosede *head)
+{
+    struct NodoSede *rec;
+    rec=head;
+
+    while(rec=!NULL)
+    {
+        rec=rec->sig;
+    }
+
+    rec=crearNodoSede(nuevo,NULL);
+
+    return 1;
 }
 
 struct NodoSede *buscarSede(struct NodoSede *head ,int codigo)
