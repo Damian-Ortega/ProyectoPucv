@@ -12,9 +12,7 @@ struct Persona
 	char *nombre;
 	char *rut;
 	int edad;
-	int puntajeRiesgoSocial;
 };
-
 
 struct NodoPersona{
 
@@ -26,6 +24,7 @@ struct NodoPersona{
 struct Sede
 {
 	char *direccion;
+	char *nombreRegion;
 	int codigoSede;
 	struct NodoPersona *persona;
 };
@@ -38,7 +37,7 @@ struct NodoSede
 
 struct Region
 {
-	char *Nombre;
+	char *nombre;
 	int pLibre;
 	struct NodoSede *sede;
 };
@@ -54,7 +53,7 @@ struct Persona *modificarPersona(char *rut);//falta
 struct Persona *buscarPersonaEnUnaSede(struct NodoPersona *head,char *rut);
 struct Persona *buscarPersonaEnSedes(struct Region **regiones,char *rut);
 struct NodoPersona *crearNodoPersona(struct Persona *nuevo,struct NodoPersona *sig,struct NodoPersona *ant);
-int agregarPersona();
+int agregarPersona(struct Persona *nuevo,struct Persona *ant,int codigoSede,struct Region **regiones);
 
 /*
 	~Region~
@@ -554,7 +553,19 @@ struct Persona *buscarPersonaEnSedes(struct Region **regiones,char *rut)
     }
 };
 
+struct Persona *eliminarPersona(struct Region **regiones,char *rut)
+{
+    struct NodoPersona *aux;
 
+    aux=buscarPersonaEnSedes(regiones,rut);
+
+    if(aux0==NULL)
+    {
+        return NULL;
+    }
+
+    free(buscarPersonasEnSedes(regiones,rut));
+}
 
 //Funciones de region
 
@@ -580,23 +591,6 @@ int crearRegion(struct Region *arreglo,char *nombre,int pLibre)
 	return 0;//el arreglo esta lleno
 }
 
-int eliminarRegion(struct Region *arreglo,char *nombre)
-{
-	int i;
-
-	for(i=0;i<arreglo->pLibre;i++)
-	{
-		if((strcmp(arreglo[i]->Nombre,nombre))==0)
-		{
-			arreglo[i]=arreglo[arreglo->pLibre-1];
-			arreglo[arreglo->pLibre-1]=NULL;
-			arreglo->pLibre--;
-			return 1;
-		}
-	}
-	return 0; //no se encontro la Region
-}
-
 struct Region *buscarRegion(struct Region *arreglo,char *nombre)
 {
 	int i;
@@ -610,20 +604,6 @@ struct Region *buscarRegion(struct Region *arreglo,char *nombre)
 	}
 	return NULL;
 
-}
-
-int hayRegiones(struct Region *arreglo)
-{
-	int i;
-
-	for(i=0;i<MAXREGION;i++)
-	{
-		if(arreglo[i]==NULL)
-		{
-			return 1;
-		}
-	}
-	return 0;
 }
 
 //Funciones Sedes
