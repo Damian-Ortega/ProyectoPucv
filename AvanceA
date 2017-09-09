@@ -488,6 +488,33 @@ struct NodoPersona *crearNodoPersona(struct Persona *nuevo,struct NodoPersona *s
     return nuevoNodo;
 }
 
+int agregarPersona(struct Persona *nuevo,struct Persona *ant,int codigoSede,struct Region **regiones)
+{
+    struct NodoPersona *rec;
+
+    rec=(buscarSedeEnRegiones(regiones,codigoSede));
+    rec=rec->persona;
+
+    if(buscarPersonaEnSedes(regiones,nuevo->rut)!=NULL)
+    {
+        return 0;
+    }
+
+    if(rec==NULL)
+    {
+        rec=crearNodoPersona(nuevo,NULL,NULL);
+    }
+    else
+    {
+        while(rec!=NULL)
+        {
+            rec=rec->sig;
+        }
+        rec=crearNodoPersona(nuevo,NULL,rec->ant);
+    }
+
+    return 1;
+}
 
 struct Persona *buscarPersonaEnUnaSede(struct NodoPersona *head,char *rut)
 {
