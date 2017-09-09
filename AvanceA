@@ -525,7 +525,7 @@ struct Persona *buscarPersonaEnUnaSede(struct NodoPersona *head,char *rut)
     {
         if(strcasecmp(rut,rec->persona->rut)==0)
         {
-            return rec->persona;
+            return rec;
         }
         rec=rec->sig;
     }
@@ -553,18 +553,41 @@ struct Persona *buscarPersonaEnSedes(struct Region **regiones,char *rut)
     }
 };
 
-struct Persona *eliminarPersona(struct Region **regiones,char *rut)
+int *eliminarPersona(struct NodoPersona **lista,int codigoSede,char *rut)
 {
-    struct NodoPersona *aux;
+    struct NodoPersona *rec;
 
-    aux=buscarPersonaEnSedes(regiones,rut);
+    rec=*lista;
 
-    if(aux0==NULL)
+    while(rec!=NULL)
     {
-        return NULL;
+        if(rec->persona!=NULL && strcmp(rut,rec->persona->rut)==0)
+        {
+            if(rec->ant == NULL)
+            {
+                if(rec->sig==NULL)
+                {
+                    *lista=NULL;
+                    return 1;
+                }
+                *lista=rec->sig;
+                free(rec);
+                return 1;
+            }
+            if(rec->sig==NULL)
+            {
+                free(rec->sig);
+                rec==NULL;
+            }else{
+                rec->ant->sig=rec->sig;
+                rec->sig->ant=rec->ant;
+                free(rec);
+                return 1;
+            }
+        }
+        rec=rec->sig;
     }
-
-    free(buscarPersonasEnSedes(regiones,rut));
+    return 0;
 }
 
 //Funciones de region
@@ -643,7 +666,7 @@ struct Sede *buscarSedeEnUnaRegion(struct NodoSede *head,int codigoSede)
     {
         if(rec->sede->codigoSede == codigoSede)
         {
-            return rec->sede;
+            return rec;
         }
 
         rec=rec->sig;
